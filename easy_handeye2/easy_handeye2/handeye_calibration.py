@@ -35,7 +35,7 @@ class HandeyeCalibrationParametersProvider:
         self.node.declare_parameter('tracking_marker_frame', '',
                                     descriptor=ParameterDescriptor(
                                         type=ParameterType.PARAMETER_STRING))
-        self.node.declare_parameter('freehand_robot_movement', '', True)
+        self.node.declare_parameter('freehand_robot_movement',  True)
 
     def read(self):
         ret = HandeyeCalibrationParameters(
