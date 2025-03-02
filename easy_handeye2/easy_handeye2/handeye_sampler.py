@@ -27,7 +27,7 @@ class HandeyeSampler:
         self.handeye_parameters = handeye_parameters
 
         # tf structures
-        self.tfBuffer: tf2_ros.Buffer = Buffer(cache_time=Duration(seconds=2), node=node)
+        self.tfBuffer: tf2_ros.Buffer = Buffer(cache_time=Duration(seconds=5), node=node)
         """
         used to get transforms to build each sample
         """
@@ -89,21 +89,21 @@ class HandeyeSampler:
         Samples the transforms at the given time.
         """
         if time is None:
-            time = self.node.get_clock().now() - rclpy.time.Duration(nanoseconds=200000000)
+            time = self.node.get_clock().now() - rclpy.time.Duration(nanoseconds=500_000_000)
 
         # here we trick the library (it is actually made for eye_in_hand only). Trust me, I'm an engineer
         try:
             if self.handeye_parameters.calibration_type == 'eye_in_hand':
                 robot = self.tfBuffer.lookup_transform(self.handeye_parameters.robot_base_frame,
                                                        self.handeye_parameters.robot_effector_frame, time,
-                                                       Duration(seconds=1))
+                                                       Duration(seconds=2))
             else:
                 robot = self.tfBuffer.lookup_transform(self.handeye_parameters.robot_effector_frame,
                                                        self.handeye_parameters.robot_base_frame, time,
-                                                       Duration(seconds=1))
+                                                       Duration(seconds=2))
             tracking = self.tfBuffer.lookup_transform(self.handeye_parameters.tracking_base_frame,
                                                       self.handeye_parameters.tracking_marker_frame, time,
-                                                      Duration(seconds=1))
+                                                      Duration(seconds=2))
         except tf2_ros.ExtrapolationException as e:
             self.node.get_logger().error(f'Failed to get the tracking transform: {e}')
             return None
